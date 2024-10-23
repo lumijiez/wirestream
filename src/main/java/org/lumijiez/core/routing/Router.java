@@ -5,23 +5,26 @@ import org.lumijiez.core.http.HttpRequest;
 import org.lumijiez.core.http.HttpResponse;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Router {
-    private final List<Route> routes = new ArrayList<>();
+    private final Map<String, HttpHandler> routes = new HashMap<>();
 
     public void addRoute(String method, String path, HttpHandler handler) {
-        routes.add(new Route(method, path, handler));
+        String key = method.toUpperCase() + ":" + path;
+        routes.put(key, handler);
     }
 
     public void handleRequest(HttpRequest request, HttpResponse response) {
-        for (Route route : routes) {
-            if (route.getMethod().equalsIgnoreCase(request.getMethod()) &&
-                    route.getPath().equals(request.getPath())) {
-                route.handle(request, response);
-                return;
-            }
+        String key = request.getMethod().toUpperCase() + ":" + request.getPath();
+        HttpHandler handler = routes.get(key);
+
+        if (handler != null) {
+            handler.handle(request, response);
+        } else {
+            response.sendResponse(404, "Not Found");
         }
-        response.sendResponse(404, "Not Found");
     }
 }

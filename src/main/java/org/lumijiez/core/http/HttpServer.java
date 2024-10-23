@@ -68,6 +68,7 @@ public class HttpServer {
             HttpRequest request = new HttpRequest(in);
             HttpResponse response = new HttpResponse(out);
 
+            Logger.info("HTTP", "Incoming: " + request.getMethod() + " " + request.getPath());
             router.handleRequest(request, response);
         } catch (IOException e) {
             Logger.error("HTTP", "Error handling client: " + e.getMessage());
