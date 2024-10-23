@@ -1,6 +1,6 @@
-package org.lumijiez.core.http;
+package io.github.lumijiez.core.http;
 
-import org.lumijiez.logging.Logger;
+import io.github.lumijiez.logging.Logger;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

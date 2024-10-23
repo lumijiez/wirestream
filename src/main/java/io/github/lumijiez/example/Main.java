@@ -1,9 +1,9 @@
-package org.lumijiez;
+package io.github.lumijiez.example;
 
-import org.lumijiez.core.config.ServerConfig;
-import org.lumijiez.core.http.HttpServer;
-import org.lumijiez.core.http.HttpStatus;
-import org.lumijiez.logging.Logger;
+import io.github.lumijiez.core.config.ServerConfig;
+import io.github.lumijiez.core.http.HttpServer;
+import io.github.lumijiez.core.http.HttpStatus;
+import io.github.lumijiez.logging.Logger;
 
 public class Main {
     public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package org.lumijiez.core.http;
+package io.github.lumijiez.core.http;
 
 public enum HttpStatus {
     // 1xx Informational

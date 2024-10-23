@@ -1,9 +1,9 @@
-package org.lumijiez.core.http;
+package io.github.lumijiez.core.http;
 
-import org.lumijiez.core.config.ServerConfig;
-import org.lumijiez.core.middleware.Middleware;
-import org.lumijiez.core.routing.Router;
-import org.lumijiez.logging.Logger;
+import io.github.lumijiez.core.config.ServerConfig;
+import io.github.lumijiez.core.middleware.Middleware;
+import io.github.lumijiez.core.routing.Router;
+import io.github.lumijiez.logging.Logger;
 
 import java.io.*;
 import java.net.ServerSocket;

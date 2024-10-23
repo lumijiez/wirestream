@@ -1,7 +1,7 @@
-package org.lumijiez.core.middleware;
+package io.github.lumijiez.core.middleware;
 
-import org.lumijiez.core.http.HttpRequest;
-import org.lumijiez.core.http.HttpResponse;
+import io.github.lumijiez.core.http.HttpRequest;
+import io.github.lumijiez.core.http.HttpResponse;
 
 import java.io.IOException;
 

@@ -1,6 +1,6 @@
-package org.lumijiez.core.http;
+package io.github.lumijiez.core.http;
 
-import org.lumijiez.core.util.UrlParser;
+import io.github.lumijiez.core.util.UrlParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;

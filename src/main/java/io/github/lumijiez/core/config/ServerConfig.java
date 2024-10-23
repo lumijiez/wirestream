@@ -1,4 +1,4 @@
-package org.lumijiez.core.config;
+package io.github.lumijiez.core.config;
 
 public class ServerConfig {
     private final int port;

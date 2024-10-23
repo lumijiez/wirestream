@@ -1,9 +1,9 @@
-package org.lumijiez.core.routing;
+package io.github.lumijiez.core.routing;
 
-import org.lumijiez.core.http.*;
-import org.lumijiez.core.middleware.Chain;
-import org.lumijiez.core.middleware.Middleware;
-import org.lumijiez.core.util.UrlParser;
+import io.github.lumijiez.core.http.*;
+import io.github.lumijiez.core.middleware.Chain;
+import io.github.lumijiez.core.middleware.Middleware;
+import io.github.lumijiez.core.util.UrlParser;
 
 import java.io.IOException;
 import java.util.ArrayList;
