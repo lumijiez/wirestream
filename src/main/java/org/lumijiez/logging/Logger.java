@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Logger {
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     public enum LogLevel {
         DEBUG, INFO, WARN, ERROR
@@ -25,7 +25,7 @@ public class Logger {
     public void log(LogLevel level, String source, String message) {
         if (level.ordinal() >= currentLogLevel.ordinal()) {
             String timestamp = LocalDateTime.now().format(formatter);
-            System.out.println("[" + timestamp + "] [" + level + "] [" + source + "] " + message);
+            System.out.println("[" + timestamp + "][" + level + "][" + source + "] " + message);
         }
     }
 
