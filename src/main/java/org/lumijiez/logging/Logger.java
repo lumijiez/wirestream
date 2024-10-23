@@ -10,10 +10,16 @@ public class Logger {
         DEBUG, INFO, WARN, ERROR
     }
 
+    private static final Logger instance = new Logger(LogLevel.INFO);
+
     private LogLevel currentLogLevel;
 
-    public Logger(LogLevel level) {
+    private Logger(LogLevel level) {
         this.currentLogLevel = level;
+    }
+
+    public static Logger getInstance() {
+        return instance;
     }
 
     public void log(LogLevel level, String source, String message) {
@@ -23,24 +29,24 @@ public class Logger {
         }
     }
 
-    public void debug(String source, String message) {
-        log(LogLevel.DEBUG, source, message);
+    public static void debug(String source, String message) {
+        getInstance().log(LogLevel.DEBUG, source, message);
     }
 
-    public void info(String source, String message) {
-        log(LogLevel.INFO, source, message);
+    public static void info(String source, String message) {
+        getInstance().log(LogLevel.INFO, source, message);
     }
 
-    public void warn(String source, String message) {
-        log(LogLevel.WARN, source, message);
+    public static void warn(String source, String message) {
+        getInstance().log(LogLevel.WARN, source, message);
     }
 
-    public void error(String source, String message) {
-        log(LogLevel.ERROR, source, message);
+    public static void error(String source, String message) {
+        getInstance().log(LogLevel.ERROR, source, message);
     }
 
-    public void error(String source, String message, Throwable throwable) {
-        log(LogLevel.ERROR, source, message + ": " + throwable.getMessage());
+    public static void error(String source, String message, Throwable throwable) {
+        getInstance().log(LogLevel.ERROR, source, message + ": " + throwable.getMessage());
         // throwable.printStackTrace();
     }
 

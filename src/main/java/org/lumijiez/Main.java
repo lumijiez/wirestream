@@ -5,8 +5,6 @@ import org.lumijiez.logging.Logger;
 
 public class Main {
     public static void main(String[] args) {
-        Logger logger = new Logger(Logger.LogLevel.DEBUG);
-
         HttpServer httpServer = new HttpServer(8080);
 
         httpServer.GET("/hello", (req, res) -> {

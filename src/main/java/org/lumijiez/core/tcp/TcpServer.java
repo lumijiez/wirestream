@@ -1,4 +1,6 @@
 package org.lumijiez.core.tcp;
+import org.lumijiez.logging.Logger;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -26,6 +28,7 @@ public abstract class TcpServer {
             while (running) {
                 try {
                     Socket clientSocket = serverSocket.accept();
+
                     System.out.println("New client connected: " + clientSocket.getInetAddress());
 
                     threadPool.submit(() -> handleClient(clientSocket));
