@@ -1,4 +1,4 @@
-package org.lumijiez.core;
+package org.lumijiez.core.tcp;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;

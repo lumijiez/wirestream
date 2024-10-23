@@ -1,25 +1,27 @@
-package org.lumijiez.core;
+package org.lumijiez.core.http;
+
+import org.lumijiez.core.routing.Router;
+import org.lumijiez.core.tcp.TcpServer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.function.BiConsumer;
 
 public class HttpServer extends TcpServer {
     private final Router router;
 
-    public HttpServer(int port, TcpServerCallback callback) {
+    public HttpServer(int port) {
         super(port);
         this.router = new Router();
     }
 
-    public void GET(String path, BiConsumer<HttpRequest, HttpResponse> handler) {
+    public void GET(String path, HttpHandler handler) {
         router.addRoute("GET", path, handler);
     }
 
-    public void POST(String path, BiConsumer<HttpRequest, HttpResponse> handler) {
+    public void POST(String path, HttpHandler handler) {
         router.addRoute("POST", path, handler);
     }
 

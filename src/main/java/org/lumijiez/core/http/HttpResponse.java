@@ -1,4 +1,4 @@
-package org.lumijiez.core;
+package org.lumijiez.core.http;
 
 import java.io.PrintWriter;
 

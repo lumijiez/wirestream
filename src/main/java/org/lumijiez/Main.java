@@ -1,25 +1,13 @@
 package org.lumijiez;
 
-import org.lumijiez.core.HttpServer;
-
-import java.net.Socket;
+import org.lumijiez.core.http.HttpServer;
+import org.lumijiez.logging.Logger;
 
 public class Main {
     public static void main(String[] args) {
-        TcpServerCallback callback = new TcpServerCallback() {
-            @Override
-            public String onClientMessage(String message, Socket clientSocket) {
-                return "";
-            }
+        Logger logger = new Logger(Logger.LogLevel.DEBUG);
 
-            @Override
-            public String onClientConnected(Socket clientSocket) {
-                System.out.println("Client connected: " + clientSocket.getInetAddress());
-                return "";
-            }
-        };
-
-        HttpServer httpServer = new HttpServer(8080, callback);
+        HttpServer httpServer = new HttpServer(8080);
 
         httpServer.GET("/hello", (req, res) -> {
             res.sendResponse(200, "Hello, World!");

@@ -1,13 +1,16 @@
-package org.lumijiez.core;
+package org.lumijiez.core.routing;
+
+import org.lumijiez.core.http.HttpHandler;
+import org.lumijiez.core.http.HttpRequest;
+import org.lumijiez.core.http.HttpResponse;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 public class Router {
     private final List<Route> routes = new ArrayList<>();
 
-    public void addRoute(String method, String path, BiConsumer<HttpRequest, HttpResponse> handler) {
+    public void addRoute(String method, String path, HttpHandler handler) {
         routes.add(new Route(method, path, handler));
     }
 
