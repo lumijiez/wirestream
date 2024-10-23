@@ -1,9 +1,6 @@
 package org.lumijiez.core.routing;
 
-import org.lumijiez.core.http.HttpHandler;
-import org.lumijiez.core.http.HttpMethod;
-import org.lumijiez.core.http.HttpRequest;
-import org.lumijiez.core.http.HttpResponse;
+import org.lumijiez.core.http.*;
 import org.lumijiez.core.middleware.Chain;
 import org.lumijiez.core.middleware.Middleware;
 

@@ -13,10 +13,10 @@ public class HttpResponse {
         this.out = out;
     }
 
-    public void sendResponse(int statusCode, String message) throws IOException {
-        Logger.info("HTTP", "Outgoing: " + statusCode + " " + message);
+    public void sendResponse(HttpStatus status, String message) throws IOException {
+        Logger.info("HTTP", "Outgoing: " + status.getCode() + " " + message);
 
-        out.write("HTTP/1.1 " + statusCode + " " + getStatusText(statusCode));
+        out.write("HTTP/1.1 " + status.getCode() + " " + status.getMessage());
         out.write("\r\n");
 
         out.write("Content-Type: text/plain");
@@ -33,14 +33,5 @@ public class HttpResponse {
         out.write(message);
 
         out.flush();
-    }
-
-    private String getStatusText(int code) {
-        return switch (code) {
-            case 200 -> "OK";
-            case 404 -> "Not Found";
-            case 500 -> "Internal Server Error";
-            default -> "Unknown";
-        };
     }
 }

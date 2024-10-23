@@ -1,5 +1,7 @@
 package org.lumijiez.core.http;
 
+import org.lumijiez.core.config.ServerConfig;
+import org.lumijiez.core.middleware.Middleware;
 import org.lumijiez.core.routing.Router;
 import org.lumijiez.logging.Logger;
 
@@ -16,16 +18,22 @@ public class HttpServer {
     private ServerSocket serverSocket;
     private final ExecutorService threadPool;
     private final Router router;
+    private static int KEEP_ALIVE_TIMEOUT = 30000;
+    private static int MAX_REQUESTS_PER_CONNECTION = 1000;
+    private static int BUFFER_SIZE = 8192;
 
-    private static final int KEEP_ALIVE_TIMEOUT = 30000;
-    private static final int MAX_REQUESTS_PER_CONNECTION = 1000;
-    private static final int BUFFER_SIZE = 8192;
-
-    public HttpServer(int port) {
+    public HttpServer(ServerConfig config) {
         this.running = false;
-        this.port = port;
+        this.port = config.getPort();
+        KEEP_ALIVE_TIMEOUT = config.getKeepAliveTimeout();
+        MAX_REQUESTS_PER_CONNECTION = config.getMaxRequestsPerConnection();
+        BUFFER_SIZE = config.getBufferSize();
         this.router = new Router();
         this.threadPool = Executors.newCachedThreadPool();
+    }
+
+    public void addMiddleware(Middleware middleware) {
+        this.router.addMiddleware(middleware);
     }
 
     public void GET(String path, HttpHandler handler) {

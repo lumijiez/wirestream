@@ -15,6 +15,26 @@ public class ServerConfig {
         this.threadPoolSize = builder.threadPoolSize;
     }
 
+    public int getPort() {
+        return port;
+    }
+
+    public int getKeepAliveTimeout() {
+        return keepAliveTimeout;
+    }
+
+    public int getMaxRequestsPerConnection() {
+        return maxRequestsPerConnection;
+    }
+
+    public int getBufferSize() {
+        return bufferSize;
+    }
+
+    public int getThreadPoolSize() {
+        return threadPoolSize;
+    }
+
     public static class Builder {
         private int port = 8080;
         private int keepAliveTimeout = 30000;
@@ -29,6 +49,26 @@ public class ServerConfig {
 
         public ServerConfig build() {
             return new ServerConfig(this);
+        }
+
+        public Builder keepAliveTimeout(int i) {
+            this.keepAliveTimeout = i;
+            return this;
+        }
+
+        public Builder maxRequestsPerConnection(int i) {
+            this.maxRequestsPerConnection = i;
+            return this;
+        }
+
+        public Builder bufferSize(int i) {
+            this.bufferSize = i;
+            return this;
+        }
+
+        public Builder threadPoolSize(int i) {
+            this.threadPoolSize = i;
+            return this;
         }
     }
 }
