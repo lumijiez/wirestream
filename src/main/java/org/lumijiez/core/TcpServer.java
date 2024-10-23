@@ -5,16 +5,14 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class TcpServer {
+public abstract class TcpServer {
     private final int port;
     private boolean running;
     private ServerSocket serverSocket;
     private final ExecutorService threadPool;
-    private final TcpServerCallback callback;
 
-    public TcpServer(int port, TcpServerCallback callback) {
+    public TcpServer(int port) {
         this.port = port;
-        this.callback = callback;
         this.running = false;
         this.threadPool = Executors.newCachedThreadPool();
     }
@@ -30,8 +28,7 @@ public class TcpServer {
                     Socket clientSocket = serverSocket.accept();
                     System.out.println("New client connected: " + clientSocket.getInetAddress());
 
-                    TcpClientHandler clientHandler = new TcpClientHandler(clientSocket, callback);
-                    threadPool.submit(clientHandler);
+                    threadPool.submit(() -> handleClient(clientSocket));
                 } catch (IOException e) {
                     if (running) {
                         System.out.println("Error accepting client connection: " + e.getMessage());
@@ -44,6 +41,8 @@ public class TcpServer {
             stop();
         }
     }
+
+    protected abstract void handleClient(Socket clientSocket);
 
     public void stop() {
         running = false;
@@ -62,4 +61,3 @@ public class TcpServer {
         return running;
     }
 }
-

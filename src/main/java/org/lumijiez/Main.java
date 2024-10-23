@@ -1,28 +1,38 @@
 package org.lumijiez;
 
-import org.lumijiez.core.TcpServer;
+import org.lumijiez.core.HttpServer;
+
+import java.net.Socket;
 
 public class Main {
     public static void main(String[] args) {
-        TcpServer server = new TcpServer(8080, (message, clientSocket) -> {
-            System.out.println("Processing message from " + clientSocket.getInetAddress() + ": " + message);
-
-            if (message.equalsIgnoreCase("hello")) {
-                return "Hello, client!";
-            } else if (message.equalsIgnoreCase("bye")) {
-                return "Goodbye!";
-            } else {
-                return "Unknown command.";
+        TcpServerCallback callback = new TcpServerCallback() {
+            @Override
+            public String onClientMessage(String message, Socket clientSocket) {
+                return "";
             }
+
+            @Override
+            public String onClientConnected(Socket clientSocket) {
+                System.out.println("Client connected: " + clientSocket.getInetAddress());
+                return "";
+            }
+        };
+
+        HttpServer httpServer = new HttpServer(8080, callback);
+
+        httpServer.GET("/hello", (req, res) -> {
+            res.sendResponse(200, "Hello, World!");
         });
 
-        new Thread(server::start).start();
+        httpServer.GET("/goodbye", (req, res) -> {
+            res.sendResponse(200, "Goodbye, World!");
+        });
 
-        try {
-            Thread.sleep(60000);
-            server.stop();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        httpServer.POST("/data", (req, res) -> {
+            res.sendResponse(200, "Data received");
+        });
+
+        httpServer.start();
     }
 }
