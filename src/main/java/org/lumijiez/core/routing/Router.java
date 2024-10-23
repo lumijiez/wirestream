@@ -3,24 +3,22 @@ package org.lumijiez.core.routing;
 import org.lumijiez.core.http.*;
 import org.lumijiez.core.middleware.Chain;
 import org.lumijiez.core.middleware.Middleware;
+import org.lumijiez.core.util.UrlParser;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Router {
-    private final Map<String, Route> routes = new HashMap<>();
+    private final List<Route> routes = new ArrayList<>();
     private final List<Middleware> middleware = new ArrayList<>();
 
     public void addMiddleware(Middleware middleware) {
         this.middleware.add(middleware);
     }
 
-    public void addRoute(HttpMethod method, String path, HttpHandler handler) {
-        String key = method.name() + ":" + path;
-        routes.put(key, new Route(method, path, handler));
+    public void addRoute(HttpMethod method, String pattern, HttpHandler handler) {
+        routes.add(new Route(method, pattern, handler));
     }
 
     public void handleRequest(HttpRequest request, HttpResponse response) throws IOException {
@@ -41,11 +39,20 @@ public class Router {
     }
 
     private void executeHandler(HttpRequest request, HttpResponse response) throws IOException {
-        String key = request.getMethod() + ":" + request.getPath();
-        Route route = routes.get(key);
+        UrlParser urlParser = new UrlParser(request.getPath());
+        Route matchedRoute = null;
 
-        if (route != null) {
-            route.handler().handle(request, response);
+        for (Route route : routes) {
+            if (route.method().name().equals(request.getMethod()) &&
+                    urlParser.matchesPattern(route.path())) {
+                matchedRoute = route;
+                break;
+            }
+        }
+
+        if (matchedRoute != null) {
+            request.setUrlParser(urlParser);
+            matchedRoute.handler().handle(request, response);
         } else {
             response.sendResponse(HttpStatus.NOT_FOUND, "Not Found");
         }

@@ -1,5 +1,7 @@
 package org.lumijiez.core.http;
 
+import org.lumijiez.core.util.UrlParser;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -10,6 +12,7 @@ public class HttpRequest {
     private String path;
     private String httpVersion;
     private final Map<String, String> headers;
+    private UrlParser urlParser;
 
     public HttpRequest(BufferedReader in) throws IOException {
         this.headers = new HashMap<>();
@@ -47,6 +50,26 @@ public class HttpRequest {
         }
         return "HTTP/1.1".equals(httpVersion) ||
                 "keep-alive".equalsIgnoreCase(connection);
+    }
+
+    public void setUrlParser(UrlParser urlParser) {
+        this.urlParser = urlParser;
+    }
+
+    public String getPathParam(String name) {
+        return urlParser != null ? urlParser.getPathParam(name) : null;
+    }
+
+    public String getQueryParam(String name) {
+        return urlParser != null ? urlParser.getQueryParam(name) : null;
+    }
+
+    public Map<String, String> getPathParams() {
+        return urlParser != null ? urlParser.getPathParams() : Map.of();
+    }
+
+    public Map<String, String> getQueryParams() {
+        return urlParser != null ? urlParser.getQueryParams() : Map.of();
     }
 
     public String getMethod() {

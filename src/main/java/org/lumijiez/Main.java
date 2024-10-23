@@ -19,8 +19,11 @@ public class Main {
             chain.next(req, res);
         });
 
-        server.GET("/hello", (req, res) ->
-                res.sendResponse(HttpStatus.OK, "Hello, World!"));
+        server.GET("/test/:lel/", (req, res) -> {
+            Logger.info("PATH", req.getPathParam("lel"));
+            Logger.info("QUERY", req.getQueryParam("lol"));
+            res.sendResponse(HttpStatus.OK, "All good, lil bro");
+        });
 
         server.start();
     }
