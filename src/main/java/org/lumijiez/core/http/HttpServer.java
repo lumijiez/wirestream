@@ -29,11 +29,11 @@ public class HttpServer {
     }
 
     public void GET(String path, HttpHandler handler) {
-        router.addRoute("GET", path, handler);
+        router.addRoute(HttpMethod.GET, path, handler);
     }
 
     public void POST(String path, HttpHandler handler) {
-        router.addRoute("POST", path, handler);
+        router.addRoute(HttpMethod.POST, path, handler);
     }
 
     public void start() {

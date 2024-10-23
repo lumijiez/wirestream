@@ -1,6 +1,7 @@
 package org.lumijiez.core.routing;
 
 import org.lumijiez.core.http.HttpHandler;
+import org.lumijiez.core.http.HttpMethod;
 import org.lumijiez.core.http.HttpRequest;
 import org.lumijiez.core.http.HttpResponse;
 import org.lumijiez.core.middleware.Chain;
@@ -49,7 +50,7 @@ public class Router {
         Route route = routes.get(key);
 
         if (route != null) {
-            route.getHandler().handle(request, response);
+            route.handler().handle(request, response);
         } else {
             response.sendResponse(HttpStatus.NOT_FOUND, "Not Found");
         }

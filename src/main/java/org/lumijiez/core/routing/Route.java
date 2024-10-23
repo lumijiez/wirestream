@@ -1,15 +1,7 @@
 package org.lumijiez.core.routing;
 
-public class Route {
-    private final HttpMethod method;
-    private final String path;
-    private final HttpHandler handler;
+import org.lumijiez.core.http.HttpHandler;
+import org.lumijiez.core.http.HttpMethod;
 
-    public Route(HttpMethod method, String path, HttpHandler handler) {
-        this.method = method;
-        this.path = path;
-        this.handler = handler;
-    }
-
-    // Add getters...
+public record Route(HttpMethod method, String path, HttpHandler handler) {
 }
