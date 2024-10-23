@@ -62,16 +62,37 @@ public class HttpServer {
     }
 
     protected void handleClient(Socket clientSocket) {
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {
+        try {
+            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+
+            in.mark(32000);
+            if (!in.ready()) {
+                clientSocket.close();
+                return;
+            }
+
+            String firstLine = in.readLine();
+            if (firstLine == null || firstLine.trim().isEmpty()) {
+                clientSocket.close();
+                return;
+            }
+            in.reset();
 
             HttpRequest request = new HttpRequest(in);
             HttpResponse response = new HttpResponse(out);
 
-            Logger.info("HTTP", "Incoming: " + request.getMethod() + " " + request.getPath());
-            router.handleRequest(request, response);
+            if (request.getMethod() != null && request.getPath() != null) {
+                Logger.info("HTTP", "Incoming: " + request.getMethod() + " " + request.getPath());
+                router.handleRequest(request, response);
+            }
+
+            clientSocket.close();
         } catch (IOException e) {
             Logger.error("HTTP", "Error handling client: " + e.getMessage());
+            try {
+                clientSocket.close();
+            } catch (IOException ignored) {}
         }
     }
 
