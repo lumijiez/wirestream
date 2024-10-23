@@ -24,7 +24,6 @@ public class Router {
     }
 
     public void handleRequest(HttpRequest request, HttpResponse response) throws IOException {
-        // Create middleware chain
         Chain chain = new Chain() {
             private int index = 0;
 
@@ -38,7 +37,6 @@ public class Router {
             }
         };
 
-        // Start middleware chain
         chain.next(request, response);
     }
 

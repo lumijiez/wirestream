@@ -1,6 +1,5 @@
 package org.lumijiez.core.middleware;
 
-import com.sun.net.httpserver.Filter;
 import org.lumijiez.core.http.HttpRequest;
 import org.lumijiez.core.http.HttpResponse;
 
