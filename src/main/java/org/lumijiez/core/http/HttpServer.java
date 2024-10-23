@@ -45,7 +45,7 @@ public class HttpServer {
                 try {
                     Socket clientSocket = serverSocket.accept();
 
-                    Logger.info("HTTP", "Client connected " + clientSocket.getInetAddress());
+                    // Logger.info("HTTP", "Client connected " + clientSocket.getInetAddress());
 
                     threadPool.submit(() -> handleClient(clientSocket));
                 } catch (IOException e) {
