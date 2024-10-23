@@ -4,6 +4,7 @@ import org.lumijiez.logging.Logger;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class HttpResponse {
     private final BufferedWriter out;
@@ -20,7 +21,7 @@ public class HttpResponse {
 
         out.write("Content-Type: text/plain");
         out.write("\r\n");
-        out.write("Content-Length: " + message.getBytes("UTF-8").length);
+        out.write("Content-Length: " + message.getBytes(StandardCharsets.UTF_8).length);
         out.write("\r\n");
         out.write("Connection: keep-alive");
         out.write("\r\n");

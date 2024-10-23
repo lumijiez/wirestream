@@ -82,7 +82,7 @@ public class HttpServer {
             while (keepAlive && requestCount < MAX_REQUESTS_PER_CONNECTION && running) {
                 try {
                     if (!in.ready()) {
-                        Thread.sleep(10);
+                        // Thread.sleep(10);
                         continue;
                     }
 
@@ -110,9 +110,6 @@ public class HttpServer {
 
                 } catch (SocketTimeoutException e) {
                     Logger.info("HTTP", "Keep-alive timeout reached");
-                    break;
-                } catch (InterruptedException e) {
-                    Logger.info("HTTP", "Connection handling interrupted");
                     break;
                 } catch (IOException e) {
                     if (running) {

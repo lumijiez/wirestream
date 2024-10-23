@@ -4,20 +4,14 @@ import org.lumijiez.core.http.HttpServer;
 
 public class Main {
     public static void main(String[] args) {
-        HttpServer httpServer = new HttpServer(8080);
+        HttpServer server = new HttpServer(8080);
 
-        httpServer.GET("/hello", (req, res) -> {
-            res.sendResponse(200, "Hello, World!");
-        });
+        server.GET("/hello", (req, res) -> res.sendResponse(200, "Hello, World!"));
 
-        httpServer.GET("/goodbye", (req, res) -> {
-            res.sendResponse(200, "Goodbye, World!");
-        });
+        server.GET("/goodbye", (req, res) -> res.sendResponse(200, "Goodbye, World!"));
 
-        httpServer.POST("/data", (req, res) -> {
-            res.sendResponse(200, "Data received");
-        });
+        server.POST("/data", (req, res) -> res.sendResponse(200, "Data received"));
 
-        httpServer.start();
+        server.start();
     }
 }
