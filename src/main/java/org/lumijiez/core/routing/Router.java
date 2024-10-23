@@ -4,9 +4,8 @@ import org.lumijiez.core.http.HttpHandler;
 import org.lumijiez.core.http.HttpRequest;
 import org.lumijiez.core.http.HttpResponse;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Router {
@@ -17,7 +16,7 @@ public class Router {
         routes.put(key, handler);
     }
 
-    public void handleRequest(HttpRequest request, HttpResponse response) {
+    public void handleRequest(HttpRequest request, HttpResponse response) throws IOException {
         String key = request.getMethod().toUpperCase() + ":" + request.getPath();
         HttpHandler handler = routes.get(key);
 

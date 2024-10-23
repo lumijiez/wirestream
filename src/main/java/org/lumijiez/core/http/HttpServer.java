@@ -3,12 +3,10 @@ package org.lumijiez.core.http;
 import org.lumijiez.core.routing.Router;
 import org.lumijiez.logging.Logger;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -18,6 +16,10 @@ public class HttpServer {
     private ServerSocket serverSocket;
     private final ExecutorService threadPool;
     private final Router router;
+
+    private static final int KEEP_ALIVE_TIMEOUT = 30000;
+    private static final int MAX_REQUESTS_PER_CONNECTION = 1000;
+    private static final int BUFFER_SIZE = 8192;
 
     public HttpServer(int port) {
         this.running = false;
@@ -63,39 +65,75 @@ public class HttpServer {
 
     protected void handleClient(Socket clientSocket) {
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+            clientSocket.setSoTimeout(KEEP_ALIVE_TIMEOUT);
 
-            in.mark(32000);
-            if (!in.ready()) {
-                clientSocket.close();
-                return;
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(clientSocket.getInputStream()),
+                    BUFFER_SIZE
+            );
+            BufferedWriter out = new BufferedWriter(
+                    new OutputStreamWriter(clientSocket.getOutputStream()),
+                    BUFFER_SIZE
+            );
+
+            int requestCount = 0;
+            boolean keepAlive = true;
+
+            while (keepAlive && requestCount < MAX_REQUESTS_PER_CONNECTION && running) {
+                try {
+                    if (!in.ready()) {
+                        Thread.sleep(10);
+                        continue;
+                    }
+
+                    HttpRequest request = new HttpRequest(in);
+                    if (request.getMethod() == null || request.getPath() == null) {
+                        break;
+                    }
+
+                    HttpResponse response = new HttpResponse(out);
+
+                    Logger.info("HTTP", String.format(
+                            "Incoming [%d]: %s %s (keep-alive: %s)",
+                            requestCount + 1,
+                            request.getMethod(),
+                            request.getPath(),
+                            request.isKeepAlive()
+                    ));
+
+                    router.handleRequest(request, response);
+
+                    keepAlive = request.isKeepAlive();
+                    requestCount++;
+
+                    out.flush();
+
+                } catch (SocketTimeoutException e) {
+                    Logger.info("HTTP", "Keep-alive timeout reached");
+                    break;
+                } catch (InterruptedException e) {
+                    Logger.info("HTTP", "Connection handling interrupted");
+                    break;
+                } catch (IOException e) {
+                    if (running) {
+                        Logger.error("HTTP", "Error processing request: " + e.getMessage());
+                    }
+                    break;
+                }
             }
-
-            String firstLine = in.readLine();
-            if (firstLine == null || firstLine.trim().isEmpty()) {
-                clientSocket.close();
-                return;
-            }
-            in.reset();
-
-            HttpRequest request = new HttpRequest(in);
-            HttpResponse response = new HttpResponse(out);
-
-            if (request.getMethod() != null && request.getPath() != null) {
-                Logger.info("HTTP", "Incoming: " + request.getMethod() + " " + request.getPath());
-                router.handleRequest(request, response);
-            }
-
-            clientSocket.close();
         } catch (IOException e) {
-            Logger.error("HTTP", "Error handling client: " + e.getMessage());
+            if (running) {
+                Logger.error("HTTP", "Error handling client: " + e.getMessage());
+            }
+        } finally {
             try {
                 clientSocket.close();
-            } catch (IOException ignored) {}
+                Logger.info("HTTP", "Connection closed gracefully");
+            } catch (IOException e) {
+                Logger.error("HTTP", "Error closing socket: " + e.getMessage());
+            }
         }
     }
-
     public void stop() {
         running = false;
         if (serverSocket != null) {
