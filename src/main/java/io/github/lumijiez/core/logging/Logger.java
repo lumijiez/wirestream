@@ -1,4 +1,4 @@
-package io.github.lumijiez.logging;
+package io.github.lumijiez.core.logging;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

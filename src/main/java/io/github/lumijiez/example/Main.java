@@ -8,7 +8,7 @@ import io.github.lumijiez.core.ws.WebSocketHandler;
 import io.github.lumijiez.core.ws.WebSocketServer;
 import io.github.lumijiez.example.daos.ProductDao;
 import io.github.lumijiez.example.models.Product;
-import io.github.lumijiez.logging.Logger;
+import io.github.lumijiez.core.logging.Logger;
 
 public class Main {
     public static void main(String[] args) {
