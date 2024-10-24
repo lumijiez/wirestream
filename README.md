@@ -6,7 +6,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Java Version](https://img.shields.io/badge/Java-17%2B-blue)](https://www.oracle.com/java/)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)]()
-[![Code Style](https://img.shields.io/badge/code%20style-google-blue)]()
 
 A lightweight, highly performant HTTP and WebSocket server framework for Java, designed with simplicity and efficiency in mind. Perfect for building web applications, APIs, and real-time communication systems.
 Heavily inspired on Express.js!
