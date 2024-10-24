@@ -58,6 +58,7 @@ public class ProductDao {
         }
     }
 
+
     public void deleteProduct(int id) {
         Transaction transaction = null;
         try (Session session = new Configuration().configure().buildSessionFactory().openSession()) {

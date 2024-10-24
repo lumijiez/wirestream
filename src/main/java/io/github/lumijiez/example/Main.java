@@ -3,6 +3,9 @@ package io.github.lumijiez.example;
 import io.github.lumijiez.core.config.ServerConfig;
 import io.github.lumijiez.core.http.HttpServer;
 import io.github.lumijiez.core.http.HttpStatus;
+import io.github.lumijiez.core.ws.WebSocketConnection;
+import io.github.lumijiez.core.ws.WebSocketHandler;
+import io.github.lumijiez.core.ws.WebSocketServer;
 import io.github.lumijiez.example.daos.ProductDao;
 import io.github.lumijiez.example.models.Product;
 import io.github.lumijiez.logging.Logger;
@@ -34,6 +37,27 @@ public class Main {
             res.sendResponse(HttpStatus.OK, product.toString());
         });
 
-        server.start();
+        WebSocketServer wsServer = new WebSocketServer(8081);
+
+        wsServer.addHandler("/chat", new WebSocketHandler() {
+            @Override
+            public void onConnect(WebSocketConnection connection) {
+                Logger.info("WS", "Client connected to chat: " + connection.getId());
+            }
+
+            @Override
+            public void onMessage(WebSocketConnection connection, String message) {
+                Logger.info("WS", "Received message: " + message);
+                wsServer.broadcast("/chat", message);
+            }
+
+            @Override
+            public void onDisconnect(WebSocketConnection connection) {
+                Logger.info("WS", "Client disconnected from chat: " + connection.getId());
+            }
+        });
+
+        new Thread(server::start).start();
+        new Thread(wsServer::start).start();
     }
 }
