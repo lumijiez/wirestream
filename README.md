@@ -1,7 +1,7 @@
 ![logo](https://github.com/user-attachments/assets/27434dca-b33f-4695-aba0-e94e1c082d06)
 
 # Wirestream
-## 🚀 LightWeight HTTP/WebSocket Server Framework
+### 🚀 Lightweight HTTP/WebSocket Server Framework
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Java Version](https://img.shields.io/badge/Java-17%2B-blue)](https://www.oracle.com/java/)
