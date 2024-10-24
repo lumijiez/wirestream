@@ -64,7 +64,6 @@ public class WebSocketFrame {
             throw new IOException("Payload too large");
         }
 
-        // Write payload
         out.write(payload);
         out.flush();
     }
