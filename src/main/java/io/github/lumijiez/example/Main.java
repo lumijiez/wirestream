@@ -45,9 +45,9 @@ public class Main {
 
             HttpFileItem uploadedFile = multipartData.getFile("file");
             if (uploadedFile != null) {
-                String fileName = uploadedFile.getFileName();
-                String contentType = uploadedFile.getContentType();
-                byte[] fileContent = uploadedFile.getContent();
+                String fileName = uploadedFile.fileName();
+                String contentType = uploadedFile.contentType();
+                byte[] fileContent = uploadedFile.content();
 
                 File uploadDir = new File("uploads");
                 if (!uploadDir.exists()) {

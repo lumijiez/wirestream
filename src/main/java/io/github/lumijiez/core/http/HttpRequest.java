@@ -74,7 +74,7 @@ public class HttpRequest {
         this.path = URLDecoder.decode(this.path, StandardCharsets.UTF_8);
     }
 
-    private void parseQueryString(String queryString) throws IOException {
+    private void parseQueryString(String queryString) {
         String[] pairs = queryString.split("&");
         for (String pair : pairs) {
             int idx = pair.indexOf("=");
@@ -82,7 +82,7 @@ public class HttpRequest {
                 String key = URLDecoder.decode(pair.substring(0, idx), StandardCharsets.UTF_8);
                 String value = URLDecoder.decode(pair.substring(idx + 1), StandardCharsets.UTF_8);
 
-                queryParams.computeIfAbsent(key, k -> new ArrayList<>()).add(value);
+                queryParams.computeIfAbsent(key, _ -> new ArrayList<>()).add(value);
                 Logger.debug("HTTP", "Query param: " + key + " = " + value);
             }
         }
@@ -150,6 +150,7 @@ public class HttpRequest {
         }
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
     private void parseChunkedBody(BufferedReader in) throws IOException {
         StringBuilder content = new StringBuilder();
         while (true) {
@@ -248,7 +249,7 @@ public class HttpRequest {
 
     public String getQueryParam(String name) {
         List<String> values = queryParams.get(name);
-        return values != null && !values.isEmpty() ? values.get(0) : null;
+        return values != null && !values.isEmpty() ? values.getFirst() : null;
     }
 
     public List<String> getQueryParams(String name) {
