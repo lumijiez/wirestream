@@ -1,6 +1,8 @@
 package io.github.lumijiez.example;
 
 import io.github.lumijiez.core.config.ServerConfig;
+import io.github.lumijiez.core.http.HttpFileItem;
+import io.github.lumijiez.core.http.HttpMultipartData;
 import io.github.lumijiez.core.http.HttpServer;
 import io.github.lumijiez.core.http.HttpStatus;
 import io.github.lumijiez.core.ws.WebSocketConnection;
@@ -9,6 +11,9 @@ import io.github.lumijiez.core.ws.WebSocketServer;
 import io.github.lumijiez.example.daos.ProductDao;
 import io.github.lumijiez.example.models.Product;
 import io.github.lumijiez.core.logging.Logger;
+
+import java.io.File;
+import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
@@ -30,6 +35,42 @@ public class Main {
             Logger.info("PATH", req.getPathParam("lel"));
             Logger.info("QUERY", req.getQueryParam("lol"));
             res.sendResponse(HttpStatus.OK, "All good, lil bro");
+        });
+
+        server.POST("/upload", (req, res) -> {
+            HttpMultipartData multipartData = req.getMultipartData();
+
+            String description = multipartData.getField("description");
+            String category = multipartData.getField("category");
+
+            HttpFileItem uploadedFile = multipartData.getFile("file");
+            if (uploadedFile != null) {
+                String fileName = uploadedFile.getFileName();
+                String contentType = uploadedFile.getContentType();
+                byte[] fileContent = uploadedFile.getContent();
+
+                File uploadDir = new File("uploads");
+                if (!uploadDir.exists()) {
+                    uploadDir.mkdirs();
+                }
+
+                Logger.info("START UPLOAD", fileName);
+                File destination = new File(uploadDir, fileName);
+                uploadedFile.saveTo(destination);
+                Logger.info("DONE UPLOAD", fileName);
+                res.sendResponse(HttpStatus.OK, "Uploaded: " + fileName);
+//                res.sendJson(HttpStatus.OK, Map.of(
+//                        "message", "File uploaded successfully",
+//                        "fileName", fileName,
+//                        "size", fileContent.length,
+//                        "description", description
+//                ));
+                Logger.info("START UPLOAD", fileName);
+            } else {
+                res.sendJson(HttpStatus.BAD_REQUEST, Map.of(
+                        "error", "No file provided"
+                ));
+            }
         });
 
         server.GET("/user", (req, res) -> {

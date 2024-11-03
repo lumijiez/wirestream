@@ -21,6 +21,7 @@ public class HttpRequest {
     private UrlParser urlParser;
     private HttpRequestBody body;
     private Map<String, String> formData;
+    private HttpMultipartData multipartData;
     private final Map<String, String> cookies;
 
     public HttpRequest(BufferedReader in) throws IOException {
@@ -115,32 +116,37 @@ public class HttpRequest {
         int contentLength = Integer.parseInt(headers.get("content-length"));
         String contentType = headers.getOrDefault("content-type", "text/plain");
 
-        if ("chunked".equalsIgnoreCase(headers.get("transfer-encoding"))) {
-            parseChunkedBody(in);
-            return;
-        }
-
-        char[] buffer = new char[contentLength];
-        int totalRead = 0;
-        while (totalRead < contentLength) {
-            int read = in.read(buffer, totalRead, contentLength - totalRead);
-            if (read == -1) {
-                throw new IOException("Unexpected end of stream");
-            }
-            totalRead += read;
-        }
-        String content = new String(buffer);
-
         if (contentType.startsWith("multipart/form-data")) {
+            Logger.debug("CONTENT TYPE", contentType);
             HttpMultipartParser parser = new HttpMultipartParser(in, contentType);
-            this.formData = parser.parse();
-            Logger.debug("HTTP", "Parsed multipart form data: " + formData.size() + " parts");
-        } else if (contentType.startsWith("application/x-www-form-urlencoded")) {
-            this.formData = parseUrlEncodedForm(content);
-            Logger.debug("HTTP", "Parsed URL encoded form data: " + formData.size() + " fields");
+            this.multipartData = parser.parse();
+            Logger.debug("HTTP", "Parsed multipart data with " +
+                    multipartData.getFiles().size() + " files and " +
+                    multipartData.getFields().size() + " fields");
         } else {
-            this.body = new HttpRequestBody(content, HttpContentType.fromString(contentType));
-            Logger.debug("HTTP", "Parsed body with content type: " + contentType);
+            if ("chunked".equalsIgnoreCase(headers.get("transfer-encoding"))) {
+                parseChunkedBody(in);
+                return;
+            }
+
+            char[] buffer = new char[contentLength];
+            int totalRead = 0;
+            while (totalRead < contentLength) {
+                int read = in.read(buffer, totalRead, contentLength - totalRead);
+                if (read == -1) {
+                    throw new IOException("Unexpected end of stream");
+                }
+                totalRead += read;
+            }
+            String content = new String(buffer);
+
+            if (contentType.startsWith("application/x-www-form-urlencoded")) {
+                this.formData = parseUrlEncodedForm(content);
+                Logger.debug("HTTP", "Parsed URL encoded form data: " + formData.size() + " fields");
+            } else {
+                this.body = new HttpRequestBody(content, HttpContentType.fromString(contentType));
+                Logger.debug("HTTP", "Parsed body with content type: " + contentType);
+            }
         }
     }
 
@@ -218,6 +224,10 @@ public class HttpRequest {
 
     public Map<String, String> getHeaders() {
         return new HashMap<>(headers);
+    }
+
+    public HttpMultipartData getMultipartData() {
+        return multipartData;
     }
 
     public HttpRequestBody getBody() {

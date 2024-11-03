@@ -10,7 +10,7 @@ public class Logger {
         DEBUG, INFO, WARN, ERROR
     }
 
-    private static final Logger instance = new Logger(LogLevel.INFO);
+    private static final Logger instance = new Logger(LogLevel.DEBUG);
 
     private LogLevel currentLogLevel;
 
