@@ -32,6 +32,11 @@ public class Main {
             res.sendResponse(HttpStatus.OK, "All good, lil bro");
         });
 
+        server.GET("/user", (req, res) -> {
+            Product product = productDao.getProductById(5);
+            res.sendJson(HttpStatus.OK, product);
+        });
+
         server.GET("/products", (req, res) -> {
             Product product = productDao.getProductById(5);
             res.sendResponse(HttpStatus.OK, product.toString());
