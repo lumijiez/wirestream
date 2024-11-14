@@ -4,6 +4,7 @@ import io.github.lumijiez.example.models.Product;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 
 import java.util.List;
 
@@ -58,7 +59,6 @@ public class ProductDao {
         }
     }
 
-
     public void deleteProduct(int id) {
         Transaction transaction = null;
         try (Session session = new Configuration().configure().buildSessionFactory().openSession()) {
@@ -74,6 +74,20 @@ public class ProductDao {
                 transaction.rollback();
             }
             e.printStackTrace();
+        }
+    }
+
+    public List<Product> getProductsByPage(int pageNumber, int pageSize) {
+        try (Session session = new Configuration().configure().buildSessionFactory().openSession()) {
+            Query<Product> query = session.createQuery("from Product", Product.class);
+
+            query.setFirstResult((pageNumber - 1) * pageSize);
+            query.setMaxResults(pageSize);
+
+            return query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

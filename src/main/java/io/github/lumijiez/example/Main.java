@@ -13,10 +13,12 @@ import io.github.lumijiez.example.models.Product;
 import io.github.lumijiez.core.logging.Logger;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
+        ThreadedWriter writer = new ThreadedWriter("test.txt");
         ProductDao productDao = new ProductDao();
 
         ServerConfig config = new ServerConfig.Builder()
@@ -29,6 +31,12 @@ public class Main {
         server.addMiddleware((req, res, chain) -> {
             Logger.info("MIDDLEWARE", "Request: " + req.getMethod() + " " + req.getPath());
             chain.next(req, res);
+        });
+
+        server.POST("/write/:text", (req, res) -> {
+            Logger.info("PATH", req.getPathParam("text"));
+            writer.writeToFile(req.getPathParam("text"));
+            res.sendResponse(HttpStatus.OK, "OK");
         });
 
         server.GET("/test/:lel/", (req, res) -> {
@@ -78,9 +86,10 @@ public class Main {
             res.sendJson(HttpStatus.OK, product);
         });
 
-        server.GET("/products", (req, res) -> {
-            Product product = productDao.getProductById(5);
-            res.sendResponse(HttpStatus.OK, product.toString());
+        server.GET("/products/:page/", (req, res) -> {
+            Logger.info("PATH", req.getPathParam("page"));
+            List<Product> products = productDao.getProductsByPage(Integer.parseInt(req.getPathParam("page")), 5);
+            res.sendResponse(HttpStatus.OK, products.toString());
         });
 
         WebSocketServer wsServer = new WebSocketServer(8081);
